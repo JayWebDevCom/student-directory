@@ -93,7 +93,7 @@ def input_students
   while !name.empty? do
     # add the student hash to the array
     students << {name: name, cohort: cohort.intern, hobby: hobby}
-    puts "Now we have #{students.length} students..."
+    puts "Now we have #{students.length} #{students.length == 1 ? 'student' : 'students'}"
 
     # get the name
     name = get_info('name')
