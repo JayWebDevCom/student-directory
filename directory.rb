@@ -26,8 +26,8 @@ def print(students)
     puts "#{student[:name]} (#{student[:cohort]} cohort)"
   end
 =end
-  students.each do |student|
-    puts "#{student[:name]} (#{student[:cohort]} cohort)"
+  students.each_with_index do |student, number|
+    puts "#{number}: #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
 
