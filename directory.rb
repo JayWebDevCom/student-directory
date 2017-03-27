@@ -21,17 +21,15 @@ end
 
 # print the students array elements
 def print(students)
-=begin # alternative code
-  for student in students do
-    puts "#{student[:name]} (#{student[:cohort]} cohort)"
-  end
-=end
+
+# define some Procs
 letter = "T"
-specific_letter = Proc.new { |student| student[:name].chr == letter  }
+specific_letter = Proc.new { |student| student[:name].chr == letter }
 
-  students.select(&specific_letter).each_with_index do |student, number|
+name_length = 12
+short_name = Proc.new { |student| student[:name].length <= name_length }
 
-
+  students.select(&short_name).each_with_index do |student, number|
     puts "#{number+1}: #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
