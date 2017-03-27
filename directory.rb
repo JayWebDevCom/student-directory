@@ -32,7 +32,7 @@ short_name = Proc.new { |student| student[:name].length <= name_length }
 # use a while loop or until loop
 count = 0
 while count != students.length do
-  puts "#{count+1} #{students[count][:name]} #{(students[count][:cohort])} cohort, hobby is #{(students[count][:hobby])}."
+  puts "#{count+1} #{students[count][:name]} #{(students[count][:cohort])} cohort, hobby is #{(students[count][:hobby])}.".center(100)
   count += 1
 end
 
@@ -40,7 +40,7 @@ end
 
 # finally we print the total in the footer
 def print_footer(names)
-  puts "Overall we have #{names.count} great students."
+  puts "Overall we have #{names.count} great students.".center(100)
 end
 
 def input_students
