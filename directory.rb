@@ -40,9 +40,9 @@ end
 
 def get_info(string)
   puts "Please enter the #{string} of the student"
-  # use .delete("\n") in place of gets.chomp but then have to change
-  # all values individually being assigned to students array as they carry the "\n"
-  info = gets
+
+  # use .delete("\n") in place of .chomp
+  info = gets.delete("\n")
   if string == 'cohort'
   months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
     info = months[rand(11)] if info.empty?
@@ -92,9 +92,9 @@ def input_students
   hobby = get_info('hobby')
 
 
-  while !name.delete("\n").empty? do
+  while !name.empty? do
     # add the student hash to the array
-    students << {name: name.delete("\n"), cohort: cohort.downcase.delete("\n").intern, hobby: hobby.delete("\n")}
+    students << {name: name, cohort: cohort.downcase.intern, hobby: hobby}
     puts "Now we have #{students.length} #{students.length == 1 ? 'student' : 'students'}"
 
     # get the name
