@@ -26,8 +26,13 @@ def print(students)
     puts "#{student[:name]} (#{student[:cohort]} cohort)"
   end
 =end
-  students.each_with_index do |student, number|
-    puts "#{number}: #{student[:name]} (#{student[:cohort]} cohort)"
+letter = "T"
+specific_letter = Proc.new { |student| student[:name].chr == letter  }
+
+  students.select(&specific_letter).each_with_index do |student, number|
+
+
+    puts "#{number+1}: #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
 
