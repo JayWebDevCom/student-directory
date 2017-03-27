@@ -50,10 +50,28 @@ def get_info(string)
   info
 end
 
+# method to print name and cohort or anyother symbol
+def print_by_symbol(students, symbol)
+to_get = students.map{ |student| student[symbol.intern] }
+to_get.sort.each { |get|
+	students.each { |student|
+	  p "#{symbol.capitalize}: #{student[symbol.intern]}   Name:#{student[:name]}" if student[symbol.intern] == get
+	  # not centered because it is easier to read when left justified
+	}
+}
+end
+
+# method to print name and cohort by any month
+def print_by_month(students, month)
+  that_cohort = Proc.new { |student| student[:cohort] == month.downcase.intern }
+  students.select(&that_cohort).each { |student|
+	  puts "Name: #{student[:name]}, Month: #{student[:cohort]}"
+  }
+end
+
 # finally we print the total in the footer
 def print_footer(names)
   puts "Overall we have #{names.count} great students.".center(100)
-  p names
 end
 
 def input_students
@@ -92,5 +110,10 @@ end
 students = input_students
 # call the methods
 print_header
+
 print(students)
+
 print_footer(students)
+
+#print_by_symbol(students, 'cohort')
+#print_by_month(students, 'april')
