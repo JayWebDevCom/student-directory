@@ -29,9 +29,13 @@ specific_letter = Proc.new { |student| student[:name].chr == letter }
 name_length = 12
 short_name = Proc.new { |student| student[:name].length <= name_length }
 
-  students.select(&short_name).each_with_index do |student, number|
-    puts "#{number+1}: #{student[:name]} (#{student[:cohort]} cohort)"
-  end
+# use a while loop or until loop
+count = 0
+while count != students.length do
+  puts "#{count+1} #{students[count][:name]} #{(students[count][:cohort])} cohort"
+  count += 1
+end
+
 end
 
 # finally we print the total in the footer
