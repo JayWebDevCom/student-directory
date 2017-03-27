@@ -32,7 +32,7 @@ short_name = Proc.new { |student| student[:name].length <= name_length }
 # use a while loop or until loop
 count = 0
 while count != students.length do
-  puts "#{count+1} #{students[count][:name]} #{(students[count][:cohort])} cohort"
+  puts "#{count+1} #{students[count][:name]} #{(students[count][:cohort])} cohort, hobby is #{(students[count][:hobby])}."
   count += 1
 end
 
@@ -40,25 +40,51 @@ end
 
 # finally we print the total in the footer
 def print_footer(names)
-  puts "Overall we have #{names.count} great students"
+  puts "Overall we have #{names.count} great students."
 end
 
 def input_students
-  puts "Please enter the names of students"
   puts "To finish, just hit RETURN twice"
 
   #create an empty array
   students = []
 
-  # get the first name
-  name = gets.chomp
-
-  while !name.empty? do
-    # add the student hash to the array
-    students << {name: name, cohort: :november}
-    puts "now we have #{students.length} students..."
-    # get another name
+  def get_name
+    puts "Please enter the name of a student"
     name = gets.chomp
+    #get_name if name.empty?
+  end
+
+  def get_cohort
+    puts "Please enter the student cohort"
+    cohort = gets.chomp
+    #get_cohort if cohort.empty?
+  end
+
+  def get_hobby
+    puts "Please enter the student hobby"
+    hobby = gets.chomp
+    #get_hobby if hobby.empty?
+  end
+
+  # get the name
+  name = get_name
+  # get the cohort
+  cohort = get_cohort
+  # get hobby info
+  hobby = get_hobby
+
+  while !name.empty? && !cohort.empty? && !hobby.empty? do
+    # add the student hash to the array
+    students << {name: name, cohort: cohort, hobby: hobby}
+    puts "Now we have #{students.length} students..."
+
+    # get the name
+    name = get_name
+    # get the cohort
+    cohort = get_cohort
+    # get hobby info
+    hobby = get_hobby
   end
   students
 end
