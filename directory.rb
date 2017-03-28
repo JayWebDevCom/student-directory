@@ -164,13 +164,5 @@ def save_students
   end
   file.close
 end
+
 interactive_menu
-
-print_header
-
-print()
-
-print_footer()
-
-print_by_symbol('cohort')
-#print_by_month(students, 'april')
