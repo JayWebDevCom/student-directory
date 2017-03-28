@@ -44,10 +44,10 @@ def get_info(string)
   puts "Please enter the #{string} of the student"
 
   # use .delete("\n") in place of .chomp
-  info = gets.delete("\n")
+  info = STDIN.gets.delete("\n")
   if string == 'cohort'
   months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
-    info = months[rand(11)] if !months.include?(info)
+    info = months[rand(11)] if !months.include?(info.downcase)
   elsif string == 'hobby'
     info = "*unavailable*" if info.empty?
   end
@@ -116,7 +116,7 @@ end
 def interactive_menu
   loop do
     print_menu
-    selection = gets.chomp
+    selection = STDIN.gets.chomp
     process(selection)
   end
 end
@@ -155,20 +155,33 @@ end
 def save_students
   out_file = File.open('students.csv', 'w')
   @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
+    student_data = [student[:name], student[:cohort]], student[:hobby]
     csv_line = student_data.join(',')
     out_file.puts csv_line
   end
   out_file.close
 end
 
-def load_students
-  in_file = File.open('students.csv', 'r')
+def load_students(filename = ARGV.first )
+  in_file = File.open(filename, 'r')
   in_file.readlines.each do |line|
     student_name, student_cohort = line.chomp.split(',')
-    @students << {name: student_name, cohort: student_cohort.to_sym}
+    @students << {name: student_name, cohort: student_cohort.to_sym, hobby: student_hobby}
   end
   in_file.close
 end
 
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+    if File.exists?(filename)
+      load_students(filename)
+      puts "Successfully loaded #{@students.count} #{@students.count == 1 ? 'student' : 'students'} from #{filename}"
+    else
+      puts "Sorry, #{filename} doesn't exist"
+      exit
+    end
+end
+
+try_load_students
 interactive_menu
