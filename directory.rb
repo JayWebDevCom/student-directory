@@ -73,7 +73,11 @@ end
 
 # finally we print the total in the footer
 def print_footer(names)
-  puts "Overall we have #{names.count} great students.".center(100)
+  if names.count > 0
+    puts "Overall we have #{names.count} great students.".center(100)
+  else
+    puts "No students to show".center(100)
+  end
 end
 
 def input_students
@@ -109,8 +113,36 @@ def input_students
   students
 end
 
+def interactive_menu
+  students = []
+  loop do
+    # 1. print the menu and ask the user what they want to do
+    puts "1. Input the students"
+    puts "2. Show the students"
+    puts "9. Exit"
+    # 2. read the input and save it to a variable
+    selection = gets.chomp
+
+      case selection
+      when "1"
+        # input the students
+        students = input_students
+      when "2"
+        # show the students
+        print(students)
+        print_footer(students)
+      when "9"
+        exit
+      else
+        puts "Please try again"
+      end
+  end
+end
 students = input_students
 # call the methods
+
+interactive_menu
+
 print_header
 
 print(students)
