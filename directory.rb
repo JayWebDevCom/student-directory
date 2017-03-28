@@ -87,9 +87,6 @@ end
 def input_students
   puts "To finish, just hit RETURN three times"
 
-  #create an empty array
-  students = []
-
   # get the name
   name = get_info('name')
 
@@ -117,7 +114,6 @@ def input_students
 end
 
 def interactive_menu
-  students = []
   loop do
     print_menu
     selection = gets.chomp
@@ -129,6 +125,7 @@ def print_menu
   puts "1 > Input the students"
   puts "2 > Show the students"
   puts "3 > Save the list to students.csv"
+  puts "4 > Load the list of students from students.csv"
   puts "9 > Exit"
 end
 
@@ -146,6 +143,8 @@ def process(selection)
         show_students
       when "3"
         save_students
+      when "4"
+        load_students
       when "9"
         exit
       else
@@ -154,15 +153,22 @@ def process(selection)
 end
 
 def save_students
-  # open a file to write to
-  file = File.open('students.csv', 'w')
-  # iterate over the students array
+  out_file = File.open('students.csv', 'w')
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
     csv_line = student_data.join(',')
-    file.puts csv_line
+    out_file.puts csv_line
   end
-  file.close
+  out_file.close
+end
+
+def load_students
+  in_file = File.open('students.csv', 'r')
+  in_file.readlines.each do |line|
+    student_name, student_cohort = line.chomp.split(',')
+    @students << {name: student_name, cohort: student_cohort.to_sym}
+  end
+  in_file.close
 end
 
 interactive_menu
