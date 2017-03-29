@@ -125,17 +125,10 @@ end
 
 def save_students(filename = @filename)
   if File.exists?(filename)
-
-    File.open(filename, "w") {|f|
-        @students.each do |student|
-          student_data = [student[:name], student[:cohort], student[:hobby]]
-          csv_line = student_data.join(',')
-          f.puts csv_line
-        end
-    }
+        save_block(filename, @students)
     puts ">< Save Successful ><"
   else
-    puts "Sorry, #{@filename} doesn't exist"
+    puts "Sorry, #{filename} doesn't exist"
   end
 end
 
@@ -254,6 +247,15 @@ def show_decision(selection)
   "You chose \"#{selection}\""
 end
 
+def save_block(filename, array)
+  File.open(filename, "w") {|f|
+      array.each do |student|
+        student_data = [student[:name], student[:cohort], student[:hobby]]
+        csv_line = student_data.join(',')
+        f.puts csv_line
+      end
+  }
+end
 
 try_load_students()
 interactive_menu
