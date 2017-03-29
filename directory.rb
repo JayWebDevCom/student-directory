@@ -79,8 +79,8 @@ def print_menu()
   puts "Please choose your evil action"
   puts "1 > Input the students"
   puts "2 > Show the students"
-  puts "3 > Save the list to #{@filename}"
-  puts "4 > Load the list of students from #{@filename}"
+  puts "3 > Save the list of students"
+  puts "4 > Load a list of students"
   puts "9 > Exit"
 end
 
@@ -107,15 +107,13 @@ def process(selection)
       when "3"
         new_line
         puts ">< You chose \"#{selection}\": Save students ><"
-        puts ">< The following are listed for Villains Academy ><"
         new_line
-        save_students
+        ask_save_message
       when "4"
         new_line
         puts ">< You chose \"#{selection}\": Load students ><"
-        puts ">...><"
         new_line
-        load_students
+        ask_load_message
       when "9"
         puts "Goodbye..."
         exit
@@ -124,15 +122,19 @@ def process(selection)
       end
 end
 
-def save_students()
-  out_file = File.open(@filename, 'w')
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort], student[:hobby]]
-    csv_line = student_data.join(',')
-    out_file.puts csv_line
+def save_students(filename = @filename)
+  if File.exists?(filename)
+    out_file = File.open(filename, 'w')
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort], student[:hobby]]
+      csv_line = student_data.join(',')
+      out_file.puts csv_line
+    end
+    puts ">< Save Successful ><"
+    out_file.close
+  else
+    puts "Sorry, #{@filename} doesn't exist"
   end
-  puts ">< Save Successful ><"
-  out_file.close
 end
 
 def input_students
@@ -144,19 +146,31 @@ def input_students
   end
 end
 
-def load_students()
-  in_file = File.open(@filename, 'r')
-  in_file.readlines.each do |line|
-        @name, @cohort, @hobby = line.chomp.split(',')
-        assign_student_info
+def interactive_menu
+  loop do
+    print_menu
+    selection = STDIN.gets.chomp
+    process(selection)
   end
-  in_file.close
+end
+
+def load_students(filename = @filename)
+  if File.exists?(filename)
+    in_file = File.open(filename, 'r')
+    in_file.readlines.each do |line|
+      @name, @cohort, @hobby = line.chomp.split(',')
+      assign_student_info
+    end
+    puts "Successfully loaded #{@students.count} #{@students.count == 1 ? 'student' : 'students'} from #{@filename}"
+    in_file.close
+  else
+    puts "Sorry, #{@filename} doesn't exist"
+  end
 end
 
 def try_load_students()
     if File.exists?(@filename)
       load_students()
-      puts "Successfully loaded #{@students.count} #{@students.count == 1 ? 'student' : 'students'} from #{@filename}"
     else
       puts "Sorry, #{@filename} doesn't exist"
       exit
@@ -183,6 +197,57 @@ end
 def new_line
   puts "\n"
 end
+
+def ask_save_message
+  #loop do
+    print_save_menu
+    file_selection = STDIN.gets
+    process_save_instructions(file_selection.delete("\n"))
+  #end
+end
+
+def ask_load_message
+  #loop do
+    print_load_menu
+    file_selection = STDIN.gets
+    process_load_instructions(file_selection.delete("\n"))
+  #end
+end
+
+def print_load_menu
+  puts "What would you like to do?"
+  puts "1 > Load from default file #{@filename}"
+  puts "2 > Specify a different file to load from"
+end
+
+def print_save_menu
+  puts "What would you like to do?"
+  puts "1 > Save to a default file #{@filename}"
+  puts "2 > Specify a different file to save to"
+end
+
+def process_save_instructions(file_selection)
+  case file_selection
+  when "1"
+    save_students(@filename)
+  when "2"
+    puts "Please enter the filename to save to"
+    entry = STDIN.gets.delete("\n")
+    save_students(entry)
+  end
+end
+
+def process_load_instructions(file_selection)
+  case file_selection
+  when "1"
+    load_students(@filename)
+  when "2"
+    puts "Please enter the filename to load from"
+    entry = STDIN.gets.delete("\n")
+    load_students(entry)
+  end
+end
+
 
 try_load_students()
 interactive_menu
