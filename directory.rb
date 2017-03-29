@@ -75,6 +75,8 @@ def interactive_menu
 end
 
 def print_menu()
+  new_line
+  puts "Please choose your evil action"
   puts "1 > Input the students"
   puts "2 > Show the students"
   puts "3 > Save the list to #{@filename}"
@@ -91,14 +93,31 @@ end
 def process(selection)
     case selection
       when "1"
-        students = input_students
+        new_line
+        puts ">< You chose \"#{selection}\": Input students ><"
+        puts ">< You are now about to enroll some students for Villains Academy ><"
+        puts "To finish, just hit RETURN three times"
+        input_students
       when "2"
+        new_line
+        puts ">< You chose \"#{selection}\": Show students ><"
+        puts ">< The following are listed for Villains Academy ><"
+        new_line
         show_students
       when "3"
+        new_line
+        puts ">< You chose \"#{selection}\": Save students ><"
+        puts ">< The following are listed for Villains Academy ><"
+        new_line
         save_students
       when "4"
+        new_line
+        puts ">< You chose \"#{selection}\": Load students ><"
+        puts ">...><"
+        new_line
         load_students
       when "9"
+        puts "Goodbye..."
         exit
       else
         puts "Please try again"
@@ -112,11 +131,11 @@ def save_students()
     csv_line = student_data.join(',')
     out_file.puts csv_line
   end
+  puts ">< Save Successful ><"
   out_file.close
 end
 
 def input_students
-  puts "To finish, just hit RETURN three times"
     get_three_info('name', 'cohort', 'hobby')
   while !@name.empty? do
       assign_student_info
@@ -128,8 +147,8 @@ end
 def load_students()
   in_file = File.open(@filename, 'r')
   in_file.readlines.each do |line|
-    @name, @cohort, @hobby = line.chomp.split(',')
-      assign_student_info
+        @name, @cohort, @hobby = line.chomp.split(',')
+        assign_student_info
   end
   in_file.close
 end
@@ -155,13 +174,15 @@ def get_three_info(name, cohort, hobby)
 end
 
 def print_students_list_by_letter()
-  #specific_letter = Proc.new { |student| student[:name].chr == @letter }
   short_name = Proc.new { |student| student[:name].length <= @name_length }
     to_get = @students.select(&short_name)
   count = 0
   p to_get
 end
 
+def new_line
+  puts "\n"
+end
 
 try_load_students()
 interactive_menu
