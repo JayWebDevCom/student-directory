@@ -155,7 +155,7 @@ end
 def save_students
   out_file = File.open('students.csv', 'w')
   @students.each do |student|
-    student_data = [student[:name], student[:cohort]], student[:hobby]
+    student_data = [student[:name], student[:cohort], student[:hobby]]
     csv_line = student_data.join(',')
     out_file.puts csv_line
   end
@@ -165,7 +165,7 @@ end
 def load_students(filename = ARGV.first )
   in_file = File.open(filename, 'r')
   in_file.readlines.each do |line|
-    student_name, student_cohort = line.chomp.split(',')
+    student_name, student_cohort, student_hobby = line.chomp.split(',')
     @students << {name: student_name, cohort: student_cohort.to_sym, hobby: student_hobby}
   end
   in_file.close
