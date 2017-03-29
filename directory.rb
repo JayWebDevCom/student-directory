@@ -1,5 +1,6 @@
 # create an array of students
 @students = []
+ARGV.any? ? @filename = ARGV.first : @filename = 'students.csv'
 
 students = [
 { name: "Dr. Hannibal Lecter", cohort: :november },
@@ -84,34 +85,7 @@ def print_footer()
   end
 end
 
-def input_students
-  puts "To finish, just hit RETURN three times"
 
-  # get the name
-  name = get_info('name')
-
-  # get the cohort
-  cohort = get_info('cohort')
-
-  #get the hobby
-  hobby = get_info('hobby')
-
-
-  while !name.empty? do
-    # add the student hash to the array
-    @students << {name: name, cohort: cohort.downcase.intern, hobby: hobby}
-    puts "Now we have #{@students.length} #{@students.length == 1 ? 'student' : 'students'}"
-
-    # get the name
-    name = get_info('name')
-
-    # get the cohort
-    cohort = get_info('cohort')
-
-    #get the hobby
-    hobby = get_info('hobby')
-  end
-end
 
 def interactive_menu
   loop do
@@ -121,15 +95,15 @@ def interactive_menu
   end
 end
 
-def print_menu
+def print_menu()
   puts "1 > Input the students"
   puts "2 > Show the students"
-  puts "3 > Save the list to students.csv"
-  puts "4 > Load the list of students from students.csv"
+  puts "3 > Save the list #{@filename}"
+  puts "4 > Load the list of students from #{@filename}"
   puts "9 > Exit"
 end
 
-def show_students
+def show_students()
   print_header()
   print_students_list()
   print_footer()
@@ -152,8 +126,8 @@ def process(selection)
       end
 end
 
-def save_students
-  out_file = File.open('students.csv', 'w')
+def save_students()
+  out_file = File.open(@filename, 'w')
   @students.each do |student|
     student_data = [student[:name], student[:cohort], student[:hobby]]
     csv_line = student_data.join(',')
@@ -162,26 +136,45 @@ def save_students
   out_file.close
 end
 
-def load_students(filename = ARGV.first )
-  in_file = File.open(filename, 'r')
+def input_students
+  puts "To finish, just hit RETURN three times"
+    get_three_info('name', 'cohort', 'hobby')
+  while !@name.empty? do
+      assign_student_info
+    puts "Now we have #{@students.length} #{@students.length == 1 ? 'student' : 'students'}"
+    get_three_info('name', 'cohort', 'hobby')
+  end
+end
+
+def load_students()
+  in_file = File.open(@filename, 'r')
   in_file.readlines.each do |line|
-    student_name, student_cohort, student_hobby = line.chomp.split(',')
-    @students << {name: student_name, cohort: student_cohort.to_sym, hobby: student_hobby}
+    @name, @cohort, @hobby = line.chomp.split(',')
+      assign_student_info
   end
   in_file.close
 end
 
-def try_load_students
-  filename = ARGV.first
-  return if filename.nil?
-    if File.exists?(filename)
-      load_students(filename)
-      puts "Successfully loaded #{@students.count} #{@students.count == 1 ? 'student' : 'students'} from #{filename}"
+def try_load_students()
+  #@return if filename.nil?
+    if File.exists?(@filename)
+      load_students()
+      puts "Successfully loaded #{@students.count} #{@students.count == 1 ? 'student' : 'students'} from #{@filename}"
     else
-      puts "Sorry, #{filename} doesn't exist"
+      puts "Sorry, #{@filename} doesn't exist"
       exit
     end
 end
 
-try_load_students
-interactive_menu
+def assign_student_info
+  @students << {name: @name, cohort: @cohort.intern, hobby: @hobby}
+end
+
+def get_three_info(name, cohort, hobby)
+  @name = get_info('name')
+  @cohort = get_info('cohort')
+  @hobby = get_info('hobby')
+end
+
+try_load_students()
+interactive_menu()
