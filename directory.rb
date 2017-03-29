@@ -1,54 +1,37 @@
 # create an array of students
 @students = []
 ARGV.any? ? @filename = ARGV.first : @filename = 'students.csv'
-
-students = [
-{ name: "Dr. Hannibal Lecter", cohort: :november },
-{ name: "Darth Vader", cohort: :november },
-{ name: "Nurse Ratched", cohort: :november },
-{ name: "Michael Corleone", cohort: :november },
-{ name: "Alex DeLarge", cohort: :november },
-{ name: "The Wicked Witch of the West", cohort: :november },
-{ name: "Terminator", cohort: :november },
-{ name: "Freddy Krueger", cohort: :november },
-{ name: "The Joker", cohort: :november },
-{ name: "Joffrey Baratheon", cohort: :november },
-{ name: "Norman Bates", cohort: :november }
-]
+# cohort accepted months
+@months_array = %w[january, february, march, april, may, june, july, august, september, october, november, december]
+# constant for displaying students by hash key
+@symbol = 'cohort'
+# constant for displaying a particular cohort of students
+@cohort_to_search = 'april'
+# constant for displaying students with names that start with
+@letter = "T"
+# constant for displaying students with names at most this long
+@name_length = 10
 
 # print a header
 def print_header
   puts "The Students of Villains Academy"
-  puts "----------"
+  puts ">< >< >< >< >< >< >< >< >< >< >< "
 end
 
-# print the students array elements
 def print_students_list()
-
-  # define some Procs
-  letter = "T"
-  specific_letter = Proc.new { |student| student[:name].chr == letter }
-
-  name_length = 12
-  short_name = Proc.new { |student| student[:name].length <= name_length }
-
-  # use a while loop or until loop
   count = 0
   while count != @students.length do
-    puts "#{count+1}: #{@students[count][:name]} #{(@students[count][:cohort])} cohort, hobby is #{(@students[count][:hobby])}.".center(100)
+    puts "#{count+1}: #{@students[count][:name]} #{(@students[count][:cohort])} cohort, hobby is #{(@students[count][:hobby])}.".center(75)
     count += 1
   end
-
 end
 
+# get name, get cohort, get hobby extracted into one method
 def get_info(string)
   puts "Please enter the #{string} of the student"
-
-  # use .delete("\n") in place of .chomp
   info = STDIN.gets.delete("\n")
   if string == 'cohort'
-  months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
-    info = months[rand(11)] if !months.include?(info.downcase)
+    info = @months_array[rand(11)] if !@months_array.include?(info.downcase)
   elsif string == 'hobby'
     info = "*unavailable*" if info.empty?
   end
@@ -56,7 +39,6 @@ def get_info(string)
 end
 
 # method to print name and cohort or anyother symbol
-@symbol = 'cohort'
 def print_by_symbol()
 to_get = @students.map{ |student| student[@symbol.intern] }
 to_get.sort.each { |get|
@@ -68,9 +50,8 @@ to_get.sort.each { |get|
 end
 
 # method to print name and cohort by any month
-@month = 'november'
 def print_by_month()
-  that_cohort = Proc.new { |student| student[:cohort] == @month.downcase.intern }
+  that_cohort = Proc.new { |student| student[:cohort] == @cohort_to_search.downcase.intern }
   @students.select(&that_cohort).each { |student|
 	  puts "Name: #{student[:name]}, Month: #{student[:cohort]}"
   }
@@ -79,13 +60,11 @@ end
 # finally we print the total in the footer
 def print_footer()
   if @students.count > 0
-    puts "Overall we have #{@students.count} great #{@students.count == 1 ? 'student' : 'students'}.".center(100)
+    puts "Overall we have #{@students.count} great #{@students.count == 1 ? 'student' : 'students'}.".center(75)
   else
-    puts "No students to show".center(100)
+    puts "No students to show".center(75)
   end
 end
-
-
 
 def interactive_menu
   loop do
@@ -98,7 +77,7 @@ end
 def print_menu()
   puts "1 > Input the students"
   puts "2 > Show the students"
-  puts "3 > Save the list #{@filename}"
+  puts "3 > Save the list to #{@filename}"
   puts "4 > Load the list of students from #{@filename}"
   puts "9 > Exit"
 end
@@ -156,7 +135,6 @@ def load_students()
 end
 
 def try_load_students()
-  #@return if filename.nil?
     if File.exists?(@filename)
       load_students()
       puts "Successfully loaded #{@students.count} #{@students.count == 1 ? 'student' : 'students'} from #{@filename}"
@@ -167,7 +145,7 @@ def try_load_students()
 end
 
 def assign_student_info
-  @students << {name: @name, cohort: @cohort.intern, hobby: @hobby}
+  @students << {name: @name, cohort: @cohort.intern.downcase, hobby: @hobby}
 end
 
 def get_three_info(name, cohort, hobby)
@@ -176,5 +154,14 @@ def get_three_info(name, cohort, hobby)
   @hobby = get_info('hobby')
 end
 
+def print_students_list_by_letter()
+  #specific_letter = Proc.new { |student| student[:name].chr == @letter }
+  short_name = Proc.new { |student| student[:name].length <= @name_length }
+    to_get = @students.select(&short_name)
+  count = 0
+  p to_get
+end
+
+
 try_load_students()
-interactive_menu()
+interactive_menu
