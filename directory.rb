@@ -2,7 +2,7 @@
 @students = []
 ARGV.any? ? @filename = ARGV.first : @filename = 'students.csv'
 # cohort accepted months
-@months_array = %w[january, february, march, april, may, june, july, august, september, october, november, december]
+@months_array = %w[january february march april may june july august september october november december]
 # constant for displaying students by hash key
 @symbol = 'cohort'
 # constant for displaying a particular cohort of students
@@ -21,7 +21,7 @@ end
 def print_students_list()
   count = 0
   while count != @students.length do
-    puts "#{count+1}: #{@students[count][:name]} #{(@students[count][:cohort])} cohort, hobby is #{(@students[count][:hobby])}.".center(75)
+    puts "#{count+1}: #{@students[count][:name]} #{(@students[count][:cohort])} cohort and hobby is #{(@students[count][:hobby])}.".center(75)
     count += 1
   end
 end
@@ -94,24 +94,25 @@ def process(selection)
     case selection
       when "1"
         new_line
-        puts ">< You chose \"#{selection}\": Input students ><"
+        puts ">< #{show_decision(selection)}: Input students ><"
         puts ">< You are now about to enroll some students for Villains Academy ><"
         puts "To finish, just hit RETURN three times"
+        new_line
         input_students
       when "2"
         new_line
-        puts ">< You chose \"#{selection}\": Show students ><"
+        puts ">< #{show_decision(selection)}: Show students ><"
         puts ">< The following are listed for Villains Academy ><"
         new_line
         show_students
       when "3"
         new_line
-        puts ">< You chose \"#{selection}\": Save students ><"
+        puts ">< #{show_decision(selection)}: Save students ><"
         new_line
         ask_save_message
       when "4"
         new_line
-        puts ">< You chose \"#{selection}\": Load students ><"
+        puts ">< #{show_decision(selection)}: Load students ><"
         new_line
         ask_load_message
       when "9"
@@ -124,14 +125,15 @@ end
 
 def save_students(filename = @filename)
   if File.exists?(filename)
-    out_file = File.open(filename, 'w')
-    @students.each do |student|
-      student_data = [student[:name], student[:cohort], student[:hobby]]
-      csv_line = student_data.join(',')
-      out_file.puts csv_line
-    end
+
+    File.open(filename, "w") {|f|
+        @students.each do |student|
+          student_data = [student[:name], student[:cohort], student[:hobby]]
+          csv_line = student_data.join(',')
+          f.puts csv_line
+        end
+    }
     puts ">< Save Successful ><"
-    out_file.close
   else
     puts "Sorry, #{@filename} doesn't exist"
   end
@@ -178,12 +180,12 @@ def try_load_students()
 end
 
 def assign_student_info
-  @students << {name: @name, cohort: @cohort.intern.downcase, hobby: @hobby}
+  @students << {name: @name, cohort: @cohort.to_sym, hobby: @hobby}
 end
 
 def get_three_info(name, cohort, hobby)
   @name = get_info('name')
-  @cohort = get_info('cohort')
+  @cohort = get_info('cohort').downcase
   @hobby = get_info('hobby')
 end
 
@@ -199,19 +201,15 @@ def new_line
 end
 
 def ask_save_message
-  #loop do
     print_save_menu
     file_selection = STDIN.gets
     process_save_instructions(file_selection.delete("\n"))
-  #end
 end
 
 def ask_load_message
-  #loop do
     print_load_menu
     file_selection = STDIN.gets
     process_load_instructions(file_selection.delete("\n"))
-  #end
 end
 
 def print_load_menu
@@ -234,6 +232,8 @@ def process_save_instructions(file_selection)
     puts "Please enter the filename to save to"
     entry = STDIN.gets.delete("\n")
     save_students(entry)
+  else
+    puts "Please try again"
   end
 end
 
@@ -245,7 +245,13 @@ def process_load_instructions(file_selection)
     puts "Please enter the filename to load from"
     entry = STDIN.gets.delete("\n")
     load_students(entry)
+  else
+    puts "Please try again"
   end
+end
+
+def show_decision(selection)
+  "You chose \"#{selection}\""
 end
 
 
