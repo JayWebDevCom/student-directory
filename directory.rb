@@ -182,6 +182,13 @@ def get_three_info(name, cohort, hobby)
   @hobby = get_info('hobby')
 end
 
+# method to print students by cohort grouping
+def print_students_by_cohort()
+@students.sort { |a,b| a[:cohort] <=> b[:cohort] }.each { |student|
+	puts "#{student[:cohort].capitalize} #{student[:name]}"
+ }
+end
+
 def print_students_list_by_letter()
   short_name = Proc.new { |student| student[:name].length <= @name_length }
     to_get = @students.select(&short_name)
@@ -209,12 +216,14 @@ def print_load_menu
   puts "What would you like to do?"
   puts "1 > Load from default file #{@filename}"
   puts "2 > Specify a different file to load from"
+  puts "9 > Return to main menu"
 end
 
 def print_save_menu
   puts "What would you like to do?"
   puts "1 > Save to a default file #{@filename}"
   puts "2 > Specify a different file to save to"
+  puts "9 > Return to main menu"
 end
 
 def process_save_instructions(file_selection)
@@ -225,6 +234,8 @@ def process_save_instructions(file_selection)
     puts "Please enter the filename to save to"
     entry = STDIN.gets.delete("\n")
     save_students(entry)
+  when "9"
+    interactive_menu
   else
     puts "Please try again"
   end
@@ -238,6 +249,8 @@ def process_load_instructions(file_selection)
     puts "Please enter the filename to load from"
     entry = STDIN.gets.delete("\n")
     load_students(entry)
+  when "9"
+    interactive_menu
   else
     puts "Please try again"
   end
@@ -258,4 +271,4 @@ def save_block(filename, array)
 end
 
 try_load_students()
-interactive_menu
+print_students_by_cohort()
