@@ -1,3 +1,4 @@
+require 'csv'
 # create an array of students
 @students = []
 ARGV.any? ? @filename = ARGV.first : @filename = 'students.csv'
@@ -98,7 +99,7 @@ def process(selection)
         puts ">< You are now about to enroll some students for Villains Academy ><"
         puts "To finish, just hit RETURN three times"
         new_line
-        input_students
+        input_students(filename = @filename)
       when "2"
         new_line
         puts ">< #{show_decision(selection)}: Show students ><"
@@ -125,17 +126,23 @@ end
 
 def save_students(filename = @filename)
   if File.exists?(filename)
-        save_block(filename, @students)
+
+    CSV.open(filename, 'w') do |csv|
+      @students.each do |student|
+        csv << [student[:name], student[:cohort], student[:hobby]]
+      end
+    end
+
     puts ">< Save Successful ><"
   else
     puts "Sorry, #{filename} doesn't exist"
   end
 end
 
-def input_students
+def input_students(filename = @filename)
     get_three_info('name', 'cohort', 'hobby')
   while !@name.empty? do
-      assign_student_info
+      @students << {name: @name, cohort: @cohort, hobby: @hobby}
     puts "Now we have #{@students.length} #{@students.length == 1 ? 'student' : 'students'}"
     get_three_info('name', 'cohort', 'hobby')
   end
@@ -150,17 +157,8 @@ def interactive_menu
 end
 
 def load_students(filename = @filename)
-  if File.exists?(filename)
-    in_file = File.open(filename, 'r')
-    in_file.readlines.each do |line|
-      @name, @cohort, @hobby = line.chomp.split(',')
-      assign_student_info
-    end
+    assign_student_info(filename)
     puts "Successfully loaded #{@students.count} #{@students.count == 1 ? 'student' : 'students'} from #{@filename}"
-    in_file.close
-  else
-    puts "Sorry, #{@filename} doesn't exist"
-  end
 end
 
 def try_load_students()
@@ -172,8 +170,10 @@ def try_load_students()
     end
 end
 
-def assign_student_info
-  @students << {name: @name, cohort: @cohort.to_sym, hobby: @hobby}
+def assign_student_info(filename)
+  CSV.foreach(filename) do |row|
+    @students << {name: row[0], cohort: row[1].to_sym, hobby: row[2]}
+  end
 end
 
 def get_three_info(name, cohort, hobby)
@@ -271,4 +271,4 @@ def save_block(filename, array)
 end
 
 try_load_students()
-print_students_by_cohort()
+interactive_menu
