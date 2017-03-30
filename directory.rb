@@ -151,13 +151,23 @@ def interactive_menu
 end
 
 def load_students(filename = @filename)
+
+  if File.exists?(filename)
+      @students = []
     assign_student_info(filename)
     puts "Successfully loaded #{@students.count} #{@students.count == 1 ? 'student' : 'students'} from #{@filename}"
+  else
+    puts "Unable to locate #{filename}"
+  end
 end
 
 def try_load_students()
     if File.exists?(@filename)
       load_students()
+
+
+
+
     else
       puts "Sorry, #{@filename} doesn't exist"
       exit
@@ -165,9 +175,13 @@ def try_load_students()
 end
 
 def assign_student_info(filename)
+
+    count = 0
   CSV.foreach(filename) do |row|
     @students << {name: row[0], cohort: row[1].to_sym, hobby: row[2]}
+    count += 1
   end
+
 end
 
 def get_three_info(name, cohort, hobby)
@@ -229,7 +243,7 @@ def process_save_instructions(file_selection)
     save_students(@filename)
   when "2"
     puts "Please enter the filename to save to"
-    entry = STDIN.gets.delete("\n")
+    entry = get_entry()
     save_students(entry)
   when "9"
     interactive_menu
@@ -244,7 +258,7 @@ def process_load_instructions(file_selection)
     load_students(@filename)
   when "2"
     puts "Please enter the filename to load from"
-    entry = STDIN.gets.delete("\n")
+    entry = get_entry()
     load_students(entry)
   when "9"
     interactive_menu
@@ -263,6 +277,10 @@ def save_to_csv(filename)
       csv << [student[:name], student[:cohort], student[:hobby]]
     end
   end
+end
+
+def get_entry()
+  entry = STDIN.gets.delete("\n")
 end
 
 try_load_students()
