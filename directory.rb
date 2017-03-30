@@ -184,9 +184,12 @@ end
 
 # method to print students by cohort grouping
 def print_students_by_cohort()
-@students.sort { |a,b| a[:cohort] <=> b[:cohort] }.each { |student|
-	puts "#{student[:cohort].capitalize} #{student[:name]}"
- }
+ @students.group_by {|student| student[:cohort]}.each { |month, value|
+	      puts "#{month.capitalize}: #{value.size} student(s)"
+		      value.each { |student|
+			      puts student[:name]
+		      }
+	      }
 end
 
 def print_students_list_by_letter()
