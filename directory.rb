@@ -32,7 +32,7 @@ def get_info(string)
   puts "Please enter the #{string} of the student"
   info = STDIN.gets.delete("\n")
   if string == 'cohort'
-    info = @months_array[rand(11)] if !@months_array.include?(info.downcase)
+    info = @months_array.sample if !@months_array.include?(info.downcase)
   elsif string == 'hobby'
     info = "*unavailable*" if info.empty?
   end
@@ -40,11 +40,10 @@ def get_info(string)
 end
 
 # method to print name and cohort or anyother symbol
-def print_by_symbol()
-to_get = @students.map{ |student| student[@symbol.intern] }
-to_get.sort.each { |get|
+def print_by_symbol(symbol)
+to_get = @students.map{ |student| student[symbol.intern] }.sort.each { |get|
 	@students.each { |student|
-	  p "#{@symbol.capitalize}: #{student[@symbol.intern]}   Name:#{student[:name]}" if student[@symbol.intern] == get
+	  p "#{symbol.capitalize}: #{student[symbol.intern]}   Name:#{student[:name]}" if student[symbol.intern] == get
 	  # not centered because it is easier to read when left justified
 	}
 }
@@ -151,7 +150,6 @@ def interactive_menu
 end
 
 def load_students(filename = @filename)
-
   if File.exists?(filename)
       @students = []
     assign_student_info(filename)
@@ -164,10 +162,6 @@ end
 def try_load_students()
     if File.exists?(@filename)
       load_students()
-
-
-
-
     else
       puts "Sorry, #{@filename} doesn't exist"
       exit
@@ -175,13 +169,10 @@ def try_load_students()
 end
 
 def assign_student_info(filename)
-
-    count = 0
   CSV.foreach(filename) do |row|
     @students << {name: row[0], cohort: row[1].to_sym, hobby: row[2]}
     count += 1
   end
-
 end
 
 def get_three_info(name, cohort, hobby)
